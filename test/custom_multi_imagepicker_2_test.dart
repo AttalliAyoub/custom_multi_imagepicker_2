@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await CustomMultiImagepicker_2.platformVersion, '42');
+    expect(await CustomMultiImagepicker2.cameraOrGallery(null), '42');
   });
 }
