@@ -19,7 +19,7 @@ dependencies:
   path: ^1.7.0
   shimmer: ^1.1.2
   native_device_orientation: ^0.4.3
-  camera: ^0.6.4+5
+  camera: ^0.7.0
   flutter_cache_manager: ^2.1.1
 
 dev_dependencies:
