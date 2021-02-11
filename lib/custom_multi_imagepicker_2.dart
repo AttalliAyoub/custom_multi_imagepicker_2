@@ -174,6 +174,8 @@ class CustomMultiImagepicker2 {
     int length = 1,
     int maxWidth,
     int maxHeight,
+    String cameraText = 'Camera',
+    String galleryText = 'Gallery',
     String toolbarFolderTitle = "Folder",
     String toolbarImageTitle = "Tap to select",
     String toolbarDoneButtonText = "DONE",
@@ -432,7 +434,9 @@ class CustomMultiImagepicker2 {
                       Icon(Icons.photo_camera,
                           color: Theme.of(_context).primaryColor),
                       SizedBox(width: 8.0),
-                      Text('Camera')
+                      Text(cameraText ?? 'Camera',
+                          style: TextStyle(
+                              color: Theme.of(_context).primaryColor)),
                     ],
                   ),
                   onPressed: camera,
@@ -448,7 +452,9 @@ class CustomMultiImagepicker2 {
                       Icon(Icons.collections,
                           color: Theme.of(_context).primaryColor),
                       SizedBox(width: 8.0),
-                      Text('Gallery')
+                      Text(galleryText ?? 'Gallery',
+                          style: TextStyle(
+                              color: Theme.of(_context).primaryColor)),
                     ],
                   ),
                   onPressed: gallery,
