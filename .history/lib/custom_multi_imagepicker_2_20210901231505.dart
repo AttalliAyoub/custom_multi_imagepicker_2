@@ -336,12 +336,12 @@ class CustomMultiImagepicker2 {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      '   ${uploadFromText ?? 'Upload From'}',
+                      '   ${uploadFromText??'Upload From'}',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     IconButton(
-                      tooltip: closeText ?? 'Close',
+                      tooltip: closeText??'Close',
                       icon: Icon(Icons.close),
                       onPressed: Navigator.of(context).pop,
                     ),
@@ -376,7 +376,7 @@ class CustomMultiImagepicker2 {
                           child: FlatButton.icon(
                             textColor: Theme.of(context).accentColor,
                             icon: Icon(Icons.camera_alt),
-                            label: Text(cameraText ?? 'Camera'),
+                            label: Text(cameraText??'Camera'),
                             onPressed: camera,
                           ),
                         ),
@@ -394,7 +394,7 @@ class CustomMultiImagepicker2 {
                           child: FlatButton.icon(
                             textColor: Theme.of(context).accentColor,
                             icon: Icon(Icons.collections),
-                            label: Text(galleryText ?? 'Gallery'),
+                            label: Text(galleryText??'Gallery'),
                             onPressed: gallery,
                           ),
                         ),
@@ -421,13 +421,12 @@ class CustomMultiImagepicker2 {
           builder: (_context) {
             return CupertinoActionSheet(
               cancelButton: CupertinoActionSheetAction(
-                child: Text(cancelText ?? 'Cancel'),
+                child: Text(cancelText??'Cancel'),
                 onPressed: Navigator.of(_context).pop,
               ),
               // Upload From
-              message:
-                  Text(messageText ?? 'how do you want to Upload the Image ?'),
-              title: Text(titleText ?? 'Upload From'),
+              message: Text(messageText??'how do you want to Upload the Image ?'),
+              title: Text(titleText??'Upload From'),
               actions: <Widget>[
                 CupertinoActionSheetAction(
                   isDefaultAction: true,
