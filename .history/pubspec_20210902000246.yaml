@@ -15,12 +15,12 @@ dependencies:
   image_cropper: 1.4.0
   path_provider: 2.0.1
   permission_handler: 6.1.1
-  screen: 0.0.5
-  path: 1.8.0
-  shimmer: 1.1.2
-  native_device_orientation: 1.0.0
-  camera: 0.8.1
-  flutter_cache_manager: 3.0.1
+  screen: ^.0.5
+  path: ^1.8.0
+  shimmer: ^1.1.2
+  native_device_orientation: ^1.0.0
+  camera: ^0.8.1
+  flutter_cache_manager: ^3.0.1
 
 # dev_dependencies:
 #   flutter_test:
