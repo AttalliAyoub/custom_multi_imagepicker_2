@@ -135,8 +135,15 @@ class CustomMultiImagepicker2 {
     AndroidUiSettings? androidUiSettings,
     IOSUiSettings? iosUiSettings,
   }) async {
+    String sourcePath = '';
+    if (old.orginal != null &&
+        old.orginal.path != null &&
+        old.orginal.path.isNotEmpty)
+      sourcePath = old.orginal.path;
+    else if (old.orginal != null && old.path != null && old.path.isNotEmpty)
+      sourcePath = old.path;
     final file = await ImageCropper.cropImage(
-      sourcePath: old.orginal.path ?? old.path,
+      sourcePath: sourcePath,
       maxHeight: maxHeight,
       maxWidth: maxWidth,
       androidUiSettings: androidUiSettings,
