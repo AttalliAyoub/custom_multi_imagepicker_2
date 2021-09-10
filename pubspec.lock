@@ -14,14 +14,14 @@ packages:
       name: camera
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.1"
+    version: "0.9.2+2"
   camera_platform_interface:
     dependency: transitive
     description:
       name: camera_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   characters:
     dependency: transitive
     description:
@@ -96,7 +96,14 @@ packages:
       name: flutter_image_compress
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
+  flutter_plugin_android_lifecycle:
+    dependency: transitive
+    description:
+      name: flutter_plugin_android_lifecycle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3"
   http:
     dependency: transitive
     description:
@@ -124,7 +131,7 @@ packages:
       name: image_cropper
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.0"
+    version: "1.4.1"
   matcher:
     dependency: transitive
     description:
@@ -159,7 +166,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.3"
   path_provider_linux:
     dependency: transitive
     description:
@@ -201,14 +208,14 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.1"
+    version: "8.1.6"
   permission_handler_platform_interface:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.1"
+    version: "3.6.1"
   petitparser:
     dependency: transitive
     description:
@@ -254,9 +261,11 @@ packages:
   screen:
     dependency: "direct main"
     description:
-      name: screen
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: a3acbdb67bc54264401cca363a81ebd23e4c5e0e
+      url: "git://github.com/AttalliAyoub/flutter_screen.git"
+    source: git
     version: "0.0.5"
   shimmer:
     dependency: "direct main"
@@ -264,7 +273,7 @@ packages:
       name: shimmer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.2"
+    version: "2.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
