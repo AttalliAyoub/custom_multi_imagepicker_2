@@ -1,21 +1,21 @@
 part of custom_multi_imagepicker_2;
 
 class _MyImagePicker extends StatefulWidget {
-  final int length, maxWidth, maxHeight;
+  final int? length, maxWidth, maxHeight;
   final bool useCroper, useComprasor;
   // final String sourcePath;
   final List<CropAspectRatioPreset> aspectRatioPresets;
-  final CropAspectRatio aspectRatio;
+  final CropAspectRatio? aspectRatio;
   final CropStyle cropStyle;
   final ImageCompressFormat compressFormat;
   final int compressQuality;
-  final AndroidUiSettings androidUiSettings;
-  final IOSUiSettings iosUiSettings;
+  final AndroidUiSettings? androidUiSettings;
+  final IOSUiSettings? iosUiSettings;
   final List<ImagePickerData> oldImages;
 
   _MyImagePicker({
-    @required this.useCroper = false,
-    @required this.useComprasor = false,
+    this.useCroper = false,
+    this.useComprasor = false,
     this.length = 1,
     this.maxWidth,
     this.maxHeight,
@@ -44,14 +44,14 @@ class _MyImagePicker extends StatefulWidget {
 }
 
 class _MyImagePickerState extends State<_MyImagePicker> {
-  CameraController _controller;
+  late CameraController _controller;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  Future<void> _initializeControllerFuture;
-  Directory extDir;
+  late Future<void> _initializeControllerFuture;
+  late Directory extDir;
   bool flash = false, /*hasFlash = false,*/ isTacking = false;
   num angle = 0.0;
-  StreamSubscription<NativeDeviceOrientation> sub;
-  ImagePickerData currentImage;
+  late StreamSubscription<NativeDeviceOrientation> sub;
+  ImagePickerData? currentImage;
   Set<ImagePickerData> images = Set<ImagePickerData>.identity();
 
   @override
@@ -92,8 +92,8 @@ class _MyImagePickerState extends State<_MyImagePicker> {
 
   @override
   void dispose() {
-    _controller?.dispose();
-    sub?.cancel();
+    _controller.dispose();
+    sub.cancel();
     super.dispose();
   }
 
@@ -116,8 +116,8 @@ class _MyImagePickerState extends State<_MyImagePicker> {
     setState(() {});
   }
 
-  Widget _rotate({Widget child}) {
-    return Transform.rotate(child: child, angle: angle);
+  Widget _rotate({required Widget child}) {
+    return Transform.rotate(child: child, angle: angle.toDouble());
   }
 
   Future<void> _dispose() {
@@ -134,11 +134,11 @@ class _MyImagePickerState extends State<_MyImagePicker> {
     await CustomMultiImagepicker2._initCams();
     final CameraDescription cameraDescription =
         (_controller.description == CustomMultiImagepicker2._cameras[0])
-            ? (CustomMultiImagepicker2._cameras[1] ?? null)
+            ? (CustomMultiImagepicker2._cameras[1])
             : CustomMultiImagepicker2._cameras[0];
-    if (_controller != null) {
-      await _controller.dispose();
-    }
+    // if (_controller != null) {
+    await _controller.dispose();
+    // }
     _controller = CameraController(
       cameraDescription,
       ResolutionPreset.max,
@@ -159,7 +159,7 @@ class _MyImagePickerState extends State<_MyImagePicker> {
         flash = false;
       });
     } on CameraException catch (e) {
-      showSnackBar(e.description);
+      showSnackBar(e.description ?? '');
     }
     if (mounted) {
       setState(() {});
@@ -167,11 +167,12 @@ class _MyImagePickerState extends State<_MyImagePicker> {
   }
 
   showSnackBar(String str) {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
       content: Text(str),
       action: SnackBarAction(
         label: 'Dismiss',
-        onPressed: () => _scaffoldKey.currentState.hideCurrentSnackBar(),
+        onPressed: () =>
+            ScaffoldMessenger.of(this.context).hideCurrentSnackBar(),
       ),
     ));
   }
@@ -190,7 +191,7 @@ class _MyImagePickerState extends State<_MyImagePicker> {
       child: FutureBuilder(
         future: i.thubmbnile,
         builder: (BuildContext context, AsyncSnapshot<File> fileSna) {
-          if ((fileSna?.data?.existsSync() ?? false))
+          if ((fileSna.data?.existsSync() ?? false))
             return _rotate(
               child: Container(
                 width: 50,
@@ -204,7 +205,7 @@ class _MyImagePickerState extends State<_MyImagePicker> {
                           width: 1)
                       : null,
                   image: DecorationImage(
-                    image: FileImage(fileSna.data),
+                    image: FileImage(fileSna.data!),
                     alignment: Alignment.center,
                     fit: BoxFit.cover,
                   ),
@@ -279,7 +280,7 @@ class _MyImagePickerState extends State<_MyImagePicker> {
                   future: _initializeControllerFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
-                      final size = _controller.value.previewSize;
+                      final size = _controller.value.previewSize ?? Size.zero;
                       final height = max(size.width, size.height);
                       final width = min(size.width, size.height);
                       return Align(
@@ -384,7 +385,7 @@ class _MyImagePickerState extends State<_MyImagePicker> {
                       padding: EdgeInsets.all(12),
                       child: AnimatedOpacity(
                         duration: Duration(seconds: 1),
-                        opacity: ((images?.length ?? 0) > 0) ? 1.0 : 0.0,
+                        opacity: (images.length > 0) ? 1.0 : 0.0,
                         child: IconButton(
                           color: Colors.white,
                           icon: _rotate(child: Icon(Icons.check)),
@@ -438,7 +439,7 @@ class _MyImagePickerState extends State<_MyImagePicker> {
   }
 
   void _captureImage(BuildContext context) async {
-    if (_controller?.value?.isInitialized ?? false) {
+    if (_controller.value.isInitialized) {
       // final String filePath = '${extDir.path}/${DateTime.now()}.jpeg';
       setState(() {
         isTacking = true;
@@ -472,11 +473,9 @@ class _MyImagePickerState extends State<_MyImagePicker> {
     final dirti = await getTemporaryDirectory();
     for (ImagePickerData i in images) {
       if (widget.oldImages.any((oi) => oi.id == i.id && oi.url != null)) {
-        i.url = widget.oldImages
-                .firstWhere((oi) => oi.id == i.id && oi.url != null,
-                    orElse: () => null)
-                ?.url ??
-            '';
+        final index = widget.oldImages
+            .indexWhere((oi) => oi.id == i.id && oi.url != null);
+        if (index > -1) i.url = widget.oldImages[index].url;
       }
       if (widget.useCroper) {
         if (widget.oldImages.any((oi) => oi.id == i.id && oi.icCropped))
@@ -495,17 +494,19 @@ class _MyImagePickerState extends State<_MyImagePicker> {
             maxWidth: widget.maxWidth,
           );
           if (file?.existsSync() ?? false)
-            i._crop(file);
+            i._crop(file!);
           else {
             final fileName = basenameWithoutExtension(i.path);
             final targetdir = '${dirti.path}/$fileName${i.id}.jpg';
             final file2 = await FlutterImageCompress.compressAndGetFile(
-                i.path, targetdir,
-                format: CompressFormat.jpeg,
-                quality: widget.compressQuality,
-                minHeight: widget.maxHeight,
-                minWidth: widget.maxWidth);
-            if (file2?.existsSync() ?? false) i._crop(file2);
+              i.path,
+              targetdir,
+              format: CompressFormat.jpeg,
+              quality: widget.compressQuality,
+              minHeight: widget.maxHeight == null ? 1080 : widget.maxHeight!,
+              minWidth: widget.maxHeight == null ? 1920 : widget.maxHeight!,
+            );
+            if (file2?.existsSync() ?? false) i._crop(file2!);
           }
         }
       } else if (widget.useComprasor) {
@@ -516,12 +517,14 @@ class _MyImagePickerState extends State<_MyImagePicker> {
           final fileName = basenameWithoutExtension(i.path);
           final targetdir = '${dirti.path}/$fileName${i.id}.jpg';
           final file = await FlutterImageCompress.compressAndGetFile(
-              i.path, targetdir,
-              format: CompressFormat.jpeg,
-              quality: widget.compressQuality,
-              minHeight: widget.maxHeight,
-              minWidth: widget.maxWidth);
-          i._crop(file);
+            i.path,
+            targetdir,
+            format: CompressFormat.jpeg,
+            quality: widget.compressQuality,
+            minHeight: widget.maxHeight == null ? 1080 : widget.maxHeight!,
+            minWidth: widget.maxHeight == null ? 1920 : widget.maxHeight!,
+          );
+          if (file?.existsSync() ?? false) i._crop(file!);
         }
       }
     }
@@ -532,7 +535,7 @@ class _MyImagePickerState extends State<_MyImagePicker> {
   _end2(BuildContext context) async {
     if (widget.useCroper)
       for (var i in images) {
-        if (!(i?.icCropped ?? true)) {
+        if (!i.icCropped) {
           final cropedFie = await ImageCropper.cropImage(
             sourcePath: i.path,
             androidUiSettings: widget.androidUiSettings,
@@ -545,7 +548,7 @@ class _MyImagePickerState extends State<_MyImagePicker> {
             maxHeight: widget.maxHeight,
             maxWidth: widget.maxWidth,
           );
-          if (cropedFie?.existsSync() ?? false) i._crop(cropedFie);
+          if (cropedFie?.existsSync() ?? false) i._crop(cropedFie!);
         }
       }
     else if (widget.useComprasor) {
@@ -558,12 +561,14 @@ class _MyImagePickerState extends State<_MyImagePicker> {
         final fileName = basenameWithoutExtension(i.path);
         final targetdir = '${dirti.path}/$fileName${i.id}.jpg';
         final file = await FlutterImageCompress.compressAndGetFile(
-            i.path, targetdir,
-            format: CompressFormat.jpeg,
-            quality: widget.compressQuality,
-            minHeight: widget.maxHeight,
-            minWidth: widget.maxWidth);
-        i._crop(file);
+          i.path,
+          targetdir,
+          format: CompressFormat.jpeg,
+          quality: widget.compressQuality,
+          minHeight: widget.maxHeight == null ? 1080 : widget.maxHeight!,
+          minWidth: widget.maxHeight == null ? 1920 : widget.maxHeight!,
+        );
+        if (file?.existsSync() ?? false) i._crop(file!);
         // }
       }
     }
@@ -572,8 +577,9 @@ class _MyImagePickerState extends State<_MyImagePicker> {
   }
 
   void _crop() async {
+    if (currentImage == null) return;
     final cropedFie = await ImageCropper.cropImage(
-      sourcePath: currentImage.path,
+      sourcePath: currentImage!.path,
       androidUiSettings: widget.androidUiSettings,
       aspectRatio: widget.aspectRatio,
       aspectRatioPresets: widget.aspectRatioPresets,
@@ -584,6 +590,6 @@ class _MyImagePickerState extends State<_MyImagePicker> {
       maxHeight: widget.maxHeight,
       maxWidth: widget.maxWidth,
     );
-    if (cropedFie?.existsSync() ?? false) currentImage._crop(cropedFie);
+    if (cropedFie?.existsSync() ?? false) currentImage!._crop(cropedFie!);
   }
 }

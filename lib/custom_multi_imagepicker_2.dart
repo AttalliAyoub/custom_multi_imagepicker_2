@@ -40,8 +40,7 @@ class CustomMultiImagepicker2 {
 
   static Future<void> _initCams() async {
     try {
-      if (_cameras == null || (_cameras?.isEmpty ?? true))
-        _cameras = await availableCameras();
+      if (_cameras.isEmpty) _cameras = await availableCameras();
     } catch (err) {
       print(err);
     }
@@ -85,8 +84,8 @@ class CustomMultiImagepicker2 {
   }
 
   static Future<Map<Permission, bool>> per(
-      {List<Permission> list, _Handlerpermission type}) async {
-    assert(type == null && (list.isNotEmpty ?? false) ||
+      {List<Permission>? list, _Handlerpermission? type}) async {
+    assert(type == null && (list?.isNotEmpty ?? false) ||
         type != null && (list?.isEmpty ?? true));
     // Permission.camera.
     List<Permission> _list = list ?? [];
@@ -103,15 +102,14 @@ class CustomMultiImagepicker2 {
       default:
         break;
     }
-    if (_list?.isNotEmpty ?? false) {
+    if (_list.isNotEmpty) {
       final List<Permission> statusList = [];
-
       for (var i in _list) {
         final e = await _permissionStatus(i);
-        if (!(e?.value ?? true)) statusList.add(e.key);
+        if (!e.value) statusList.add(e.key);
       }
       print(statusList);
-      if (statusList?.isNotEmpty ?? false) {
+      if (statusList.isNotEmpty) {
         final a = await _requestPermission(statusList);
         return a;
       }
@@ -121,9 +119,9 @@ class CustomMultiImagepicker2 {
 
   static Future<ImagePickerData> cropOnly(
     ImagePickerData old, {
-    int maxWidth,
-    int maxHeight,
-    CropAspectRatio aspectRatio,
+    required int maxWidth,
+    required int maxHeight,
+    CropAspectRatio? aspectRatio,
     List<CropAspectRatioPreset> aspectRatioPresets = const [
       CropAspectRatioPreset.original,
       CropAspectRatioPreset.square,
@@ -134,8 +132,8 @@ class CustomMultiImagepicker2 {
     CropStyle cropStyle = CropStyle.rectangle,
     ImageCompressFormat compressFormat = ImageCompressFormat.jpg,
     int compressQuality = 90,
-    AndroidUiSettings androidUiSettings,
-    IOSUiSettings iosUiSettings,
+    AndroidUiSettings? androidUiSettings,
+    IOSUiSettings? iosUiSettings,
   }) async {
     final file = await ImageCropper.cropImage(
       sourcePath: old.orginal.path ?? old.path,
@@ -150,7 +148,7 @@ class CustomMultiImagepicker2 {
       iosUiSettings: iosUiSettings,
     );
     if (file?.existsSync() ?? false) {
-      old._crop(file);
+      old._crop(file!);
     } else {
       final dirti = await getTemporaryDirectory();
       final fileName = basenameWithoutExtension(old.path);
@@ -161,7 +159,7 @@ class CustomMultiImagepicker2 {
           quality: compressQuality,
           minHeight: maxHeight,
           minWidth: maxWidth);
-      if (file2?.existsSync() ?? false) old._crop(file2);
+      if (file2?.existsSync() ?? false) old._crop(file2!);
     }
     return old;
   }
@@ -169,11 +167,11 @@ class CustomMultiImagepicker2 {
   static Future<List<ImagePickerData>> cameraOrGallery(
     BuildContext context, {
     bool useCropper = false,
-    bool bottomSheetUI,
     bool useComprasor = false,
     int length = 1,
-    int maxWidth,
-    int maxHeight,
+    bool? bottomSheetUI,
+    int? maxWidth,
+    int? maxHeight,
     String cameraText = 'Camera',
     String galleryText = 'Gallery',
     String toolbarFolderTitle = "Folder",
@@ -184,7 +182,7 @@ class CustomMultiImagepicker2 {
     bool folderModeGallery = true,
     List<ImagePickerData> oldImages = const <ImagePickerData>[],
     List<ImagePickerData> excloudImages = const <ImagePickerData>[],
-    CropAspectRatio croperAspectRatio,
+    CropAspectRatio? croperAspectRatio,
     List<CropAspectRatioPreset> croperAspectRatioPresets = const [
       CropAspectRatioPreset.original,
       CropAspectRatioPreset.square,
@@ -195,13 +193,13 @@ class CustomMultiImagepicker2 {
     CropStyle cropStyle = CropStyle.rectangle,
     ImageCompressFormat compressCroperFormat = ImageCompressFormat.jpg,
     int compressCroperQuality = 90,
-    AndroidUiSettings androidCroperUiSettings,
-    IOSUiSettings iosCroperUiSettings,
+    AndroidUiSettings? androidCroperUiSettings,
+    IOSUiSettings? iosCroperUiSettings,
   }) async {
     assert(maxWidth == null || maxWidth > 0);
     assert(maxHeight == null || maxHeight > 0);
     assert(compressCroperQuality >= 0 && compressCroperQuality <= 100);
-    assert(useCropper != null);
+    // assert(useCropper != null);
 
     await CustomMultiImagepicker2._initCams();
 
@@ -245,25 +243,27 @@ class CustomMultiImagepicker2 {
           'enableLog': enableLogInGallery,
           'folderMode': folderModeGallery
         });
-        if (resulte?.isNotEmpty ?? false) imgs.addAll(resulte);
+        if (resulte?.isNotEmpty ?? false) imgs.addAll(resulte!);
         // _channel.invokeMethod('end');
       } catch (err) {
         // _channel.invokeMethod('end');
         print(err);
       }
       final listOfImages = imgs
-              ?.map((i) => ImagePickerData.frmMap(Map<String, dynamic>.from(i)))
-              ?.toList() ??
-          [];
+          .map((i) => ImagePickerData.frmMap(Map<String, dynamic>.from(i)))
+          .toList();
       final dirti = await getTemporaryDirectory();
       for (ImagePickerData i in listOfImages) {
-        if (oldImages.any((oi) => oi.id == i.id && oi.url != null)) {
-          i.url = oldImages
-                  .firstWhere((oi) => oi.id == i.id && oi.url != null,
-                      orElse: () => null)
-                  ?.url ??
-              '';
-        }
+        final index =
+            oldImages.indexWhere((oi) => oi.id == i.id && oi.url != null);
+        if (index > -1) i.url = oldImages[index].url;
+        // if (oldImages.any((oi) => oi.id == i.id && oi.url != null)) {
+        // i.url = oldImages
+        //         .firstWhere((oi) => oi.id == i.id && oi.url != null,
+        //             orElse: () => null)
+        //         ?.url ??
+        //     '';
+        // }
         if (useCropper) {
           if (oldImages.any((oi) => oi.id == i.id && oi.icCropped))
             i._icCropped = true; // ._crop(i.file);
@@ -281,17 +281,19 @@ class CustomMultiImagepicker2 {
               maxWidth: maxWidth,
             );
             if (file?.existsSync() ?? false)
-              i._crop(file);
+              i._crop(file!);
             else {
               final fileName = basenameWithoutExtension(i.path);
               final targetdir = '${dirti.path}/$fileName${i.id}.jpg';
               final file2 = await FlutterImageCompress.compressAndGetFile(
-                  i.path, targetdir,
-                  format: CompressFormat.jpeg,
-                  quality: compressCroperQuality,
-                  minHeight: maxHeight,
-                  minWidth: maxWidth);
-              if (file2?.existsSync() ?? false) i._crop(file2);
+                i.path,
+                targetdir,
+                format: CompressFormat.jpeg,
+                quality: compressCroperQuality,
+                minHeight: maxHeight == null ? 1080 : maxHeight,
+                minWidth: maxHeight == null ? 1920 : maxHeight,
+              );
+              if (file2?.existsSync() ?? false) i._crop(file2!);
             }
           }
         } else if (useComprasor) {
@@ -302,12 +304,14 @@ class CustomMultiImagepicker2 {
             final fileName = basenameWithoutExtension(i.path);
             final targetdir = '${dirti.path}/$fileName${i.id}.jpg';
             final file = await FlutterImageCompress.compressAndGetFile(
-                i.path, targetdir,
-                format: CompressFormat.jpeg,
-                quality: compressCroperQuality,
-                minHeight: maxHeight,
-                minWidth: maxWidth);
-            i._crop(file);
+              i.path,
+              targetdir,
+              format: CompressFormat.jpeg,
+              quality: compressCroperQuality,
+              minHeight: maxHeight == null ? 1080 : maxHeight,
+              minWidth: maxHeight == null ? 1920 : maxHeight,
+            );
+            if (file?.existsSync() ?? false) i._crop(file!);
           }
         }
       }
@@ -411,7 +415,8 @@ class CustomMultiImagepicker2 {
 
     if (bottomSheetUI == true ||
         Theme.of(context).platform == TargetPlatform.iOS) {
-      resulte = await showCupertinoModalPopup<List<ImagePickerData>>(
+      // resulte
+      final r = await showCupertinoModalPopup<List<ImagePickerData>>(
           context: context,
           builder: (_context) {
             return CupertinoActionSheet(
@@ -434,7 +439,7 @@ class CustomMultiImagepicker2 {
                       Icon(Icons.photo_camera,
                           color: Theme.of(_context).primaryColor),
                       SizedBox(width: 8.0),
-                      Text(cameraText ?? 'Camera',
+                      Text(cameraText,
                           style: TextStyle(
                               color: Theme.of(_context).primaryColor)),
                     ],
@@ -452,7 +457,7 @@ class CustomMultiImagepicker2 {
                       Icon(Icons.collections,
                           color: Theme.of(_context).primaryColor),
                       SizedBox(width: 8.0),
-                      Text(galleryText ?? 'Gallery',
+                      Text(galleryText,
                           style: TextStyle(
                               color: Theme.of(_context).primaryColor)),
                     ],
@@ -462,9 +467,10 @@ class CustomMultiImagepicker2 {
               ],
             );
           });
+      if (r != null) resulte = r;
     } else if (bottomSheetUI == false ||
         Theme.of(context).platform == TargetPlatform.android) {
-      resulte = await showModalBottomSheet<List<ImagePickerData>>(
+      final r = await showModalBottomSheet<List<ImagePickerData>>(
           context: context,
           isScrollControlled: false,
           elevation: 5,
@@ -473,6 +479,7 @@ class CustomMultiImagepicker2 {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
           builder: builder);
+      if (r != null) resulte = r;
     }
     print(resulte);
     return resulte;

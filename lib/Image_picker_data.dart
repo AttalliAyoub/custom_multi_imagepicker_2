@@ -8,21 +8,21 @@ class _ImagePickerData {
   final String path;
 
   const _ImagePickerData.constCON({
-    @required this.id,
-    @required this.path,
-    @required this.name,
+    required this.id,
+    required this.path,
+    required this.name,
   });
 
   _ImagePickerData({
-    @required this.id,
-    @required this.path,
-    @required this.name,
-  }) : assert(path?.isNotEmpty ?? false);
+    required this.id,
+    required this.path,
+    required this.name,
+  }) : assert(path.isNotEmpty);
 
   Map<String, dynamic> get map => {
-        if (path?.isNotEmpty ?? false) 'path': path,
-        if (!(id?.isNaN ?? true)) 'id': id,
-        if (name?.isNotEmpty ?? false) 'name': name
+        if (path.isNotEmpty) 'path': path,
+        if (!(id.isNaN)) 'id': id,
+        if (name.isNotEmpty) 'name': name
       };
 
   File get file => File(path);
@@ -31,7 +31,7 @@ class _ImagePickerData {
   bool operator ==(dynamic other) {
     if (other is ImagePickerData) {
       return other.id == id &&
-          (other.path == path || other?.orginal?.path == path);
+          (other.path == path || other.orginal.path == path);
     }
     return false;
   }
@@ -47,7 +47,7 @@ class ImagePickerData extends _ImagePickerData {
   final ThembNileConfiguration thembNileConfiguration;
   @override
   String path;
-  String url;
+  String? url;
   bool _icCropped = false;
   bool _isUrlCropped = false;
   bool get icCropped => _icCropped;
@@ -64,10 +64,10 @@ class ImagePickerData extends _ImagePickerData {
   }
 
   ImagePickerData({
-    int id,
-    this.path,
+    required int id,
+    required this.path,
     this.url,
-    String name,
+    required String name,
     this.thembNileConfiguration = const ThembNileConfiguration(),
   })  : _orginal = _ImagePickerData.constCON(id: id, name: name, path: path),
         super(id: id, name: name, path: path) {
@@ -87,7 +87,7 @@ class ImagePickerData extends _ImagePickerData {
   }
 
   void _crop(File file) {
-    assert((file?.existsSync() ?? false) && (file?.path?.isNotEmpty ?? false));
+    assert(file.existsSync() && file.path.isNotEmpty);
     path = file.path;
     if (url?.isNotEmpty ?? false) _isUrlCropped = true;
     _icCropped = true;
