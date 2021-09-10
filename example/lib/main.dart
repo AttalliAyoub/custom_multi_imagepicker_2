@@ -6,7 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
 }
 
 class Page extends StatefulWidget {
-  Page({Key key}) : super(key: key);
+  Page({Key? key}) : super(key: key);
 
   @override
   _PageState createState() => _PageState();
@@ -29,7 +29,7 @@ class _PageState extends State<Page> {
     final images = await CustomMultiImagepicker2.cameraOrGallery(context,
         length: 5, oldImages: this.images);
     setState(() {
-      this.images = images ?? List<ImagePickerData>.empty();
+      this.images = images;
     });
   }
 
