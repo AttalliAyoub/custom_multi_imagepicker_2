@@ -14,7 +14,7 @@ dependencies:
   flutter_image_compress: ^1.1.0
   image_cropper: ^1.4.1
   path_provider: ^2.0.2
-  permission_handler: ^8.1.4
+  permission_handler: any
   screen: ^0.0.5
   path: ^1.8.0
   shimmer: ^2.0.0
