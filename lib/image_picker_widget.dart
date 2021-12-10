@@ -60,9 +60,10 @@ class _MyImagePickerState extends State<_MyImagePicker> {
     setState(() {
       images.addAll(widget.oldImages);
     });
-    Screen.keepOn(true);
+    // Screen.keepOn(true);
+    Wakelock.enable();
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     _initCameras();
     sub = NativeDeviceOrientationCommunicator()
         .onOrientationChanged(useSensor: true)
@@ -122,11 +123,13 @@ class _MyImagePickerState extends State<_MyImagePicker> {
 
   Future<void> _dispose() {
     return Future.wait([
-      Screen.keepOn(false),
+      // Screen.keepOn(false),
+      Wakelock.disable(),
       _controller.dispose(),
       SystemChrome.setPreferredOrientations(
           [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]),
-      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values),
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: SystemUiOverlay.values),
     ]);
   }
 

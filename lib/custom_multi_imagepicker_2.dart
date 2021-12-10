@@ -2,7 +2,6 @@ library custom_multi_imagepicker_2;
 
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -14,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:screen/screen.dart';
+import 'package:wakelock/wakelock.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 export 'package:image_cropper/src/options.dart'
