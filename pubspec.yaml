@@ -1,6 +1,6 @@
 name: custom_multi_imagepicker_2
 description: flutter multi image picker with cropper and compressor
-version: 0.0.6
+version: 0.0.7
 homepage: https://github.com/AttalliAyoub/custom_multi_imagepicker_2
 
 environment:
@@ -13,13 +13,15 @@ dependencies:
   flutter_image_compress: ">=1.1.0"
   image_cropper: ">=1.4.0"
   path_provider: ">=2.0.0"
-  permission_handler: ">=6.0.1"
+  permission_handler: ">=9.0.1"
   path: ">=1.8.0"
   shimmer: ">=2.0.0"
   native_device_orientation: ">=1.0.0"
   camera: ^0.9.4+14
   flutter_cache_manager: ">=3.0.0"
   wakelock: ">=0.4.0"
+
+  # lutter pub publish
 
 # dev_dependencies:
 #   flutter_test:
