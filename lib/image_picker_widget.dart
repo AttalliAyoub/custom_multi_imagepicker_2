@@ -277,7 +277,6 @@ class _MyImagePickerState extends State<_MyImagePicker> {
             return Stack(
               alignment: Alignment.center,
               fit: StackFit.expand,
-              overflow: Overflow.clip,
               children: <Widget>[
                 FutureBuilder<void>(
                   future: _initializeControllerFuture,
