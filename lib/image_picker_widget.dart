@@ -483,20 +483,22 @@ class _MyImagePickerState extends State<_MyImagePicker> {
         if (widget.oldImages.any((oi) => oi.id == i.id && oi.icCropped))
           i._icCropped = true; //._crop(i.file);
         else {
-          final file = await ImageCropper.cropImage(
+          final file = await CustomMultiImagepicker2.imageCropper.cropImage(
             sourcePath: i.path,
-            androidUiSettings: widget.androidUiSettings,
             aspectRatio: widget.aspectRatio,
             aspectRatioPresets: widget.aspectRatioPresets,
             compressFormat: widget.compressFormat,
             compressQuality: widget.compressQuality,
             cropStyle: widget.cropStyle,
-            iosUiSettings: widget.iosUiSettings,
+            uiSettings: [
+              if (widget.androidUiSettings != null) widget.androidUiSettings!,
+              if (widget.iosUiSettings != null) widget.iosUiSettings!,
+            ],
             maxHeight: widget.maxHeight,
             maxWidth: widget.maxWidth,
           );
-          if (file?.existsSync() ?? false)
-            i._crop(file!);
+          if (file != null)
+            i._crop(File(file.path));
           else {
             final fileName = basenameWithoutExtension(i.path);
             final targetdir = '${dirti.path}/$fileName${i.id}.jpg';
@@ -538,19 +540,22 @@ class _MyImagePickerState extends State<_MyImagePicker> {
     if (widget.useCroper)
       for (var i in images) {
         if (!i.icCropped) {
-          final cropedFie = await ImageCropper.cropImage(
+          final cropedFie =
+              await CustomMultiImagepicker2.imageCropper.cropImage(
             sourcePath: i.path,
-            androidUiSettings: widget.androidUiSettings,
             aspectRatio: widget.aspectRatio,
             aspectRatioPresets: widget.aspectRatioPresets,
             compressFormat: widget.compressFormat,
             compressQuality: widget.compressQuality,
             cropStyle: widget.cropStyle,
-            iosUiSettings: widget.iosUiSettings,
+            uiSettings: [
+              if (widget.androidUiSettings != null) widget.androidUiSettings!,
+              if (widget.iosUiSettings != null) widget.iosUiSettings!,
+            ],
             maxHeight: widget.maxHeight,
             maxWidth: widget.maxWidth,
           );
-          if (cropedFie?.existsSync() ?? false) i._crop(cropedFie!);
+          if (cropedFie != null) i._crop(File(cropedFie.path));
         }
       }
     else if (widget.useComprasor) {
@@ -580,18 +585,20 @@ class _MyImagePickerState extends State<_MyImagePicker> {
 
   void _crop() async {
     if (currentImage == null) return;
-    final cropedFie = await ImageCropper.cropImage(
+    final cropedFie = await CustomMultiImagepicker2.imageCropper.cropImage(
       sourcePath: currentImage!.path,
-      androidUiSettings: widget.androidUiSettings,
       aspectRatio: widget.aspectRatio,
       aspectRatioPresets: widget.aspectRatioPresets,
       compressFormat: widget.compressFormat,
       compressQuality: widget.compressQuality,
       cropStyle: widget.cropStyle,
-      iosUiSettings: widget.iosUiSettings,
+      uiSettings: [
+        if (widget.androidUiSettings != null) widget.androidUiSettings!,
+        if (widget.iosUiSettings != null) widget.iosUiSettings!,
+      ],
       maxHeight: widget.maxHeight,
       maxWidth: widget.maxWidth,
     );
-    if (cropedFie?.existsSync() ?? false) currentImage!._crop(cropedFie!);
+    if (cropedFie != null) currentImage!._crop(File(cropedFie.path));
   }
 }

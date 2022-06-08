@@ -16,14 +16,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
-export 'package:image_cropper/src/options.dart'
-    show
-        CropAspectRatio,
-        CropAspectRatioPreset,
-        ImageCompressFormat,
-        CropStyle,
-        AndroidUiSettings,
-        IOSUiSettings;
+
+export 'package:image_cropper_platform_interface/src/models/settings.dart'
+    show CropAspectRatio, CropAspectRatioPreset, ImageCompressFormat, CropStyle;
+export 'package:image_cropper/src/settings.dart'
+    show AndroidUiSettings, IOSUiSettings;
 
 part 'image_picker_widget.dart';
 part 'Image_picker_data.dart';
@@ -34,6 +31,8 @@ enum _Handlerpermission { cam, storage, both }
 class CustomMultiImagepicker2 {
   static const MethodChannel _channel =
       const MethodChannel('com.ayoub.custom_multi_imagepicker_2');
+
+  static final imageCropper = ImageCropper();
 
   static List<CameraDescription> _cameras = [];
 
@@ -135,26 +134,28 @@ class CustomMultiImagepicker2 {
     IOSUiSettings? iosUiSettings,
   }) async {
     String sourcePath = '';
-    if (old.orginal != null &&
-        old.orginal.path != null &&
-        old.orginal.path.isNotEmpty)
+    if (old.orginal.path.isNotEmpty)
       sourcePath = old.orginal.path;
-    else if (old.orginal != null && old.path != null && old.path.isNotEmpty)
-      sourcePath = old.path;
-    final file = await ImageCropper.cropImage(
+    else if (old.path.isNotEmpty) sourcePath = old.path;
+    final file = await imageCropper.cropImage(
       sourcePath: sourcePath,
       maxHeight: maxHeight,
       maxWidth: maxWidth,
-      androidUiSettings: androidUiSettings,
+      // androidUiSettings: androidUiSettings,
+      // iosUiSettings: iosUiSettings,
+
+      uiSettings: [
+        if (androidUiSettings != null) androidUiSettings,
+        if (iosUiSettings != null) iosUiSettings,
+      ],
       aspectRatio: aspectRatio,
       aspectRatioPresets: aspectRatioPresets,
       compressFormat: compressFormat,
       compressQuality: compressQuality,
       cropStyle: cropStyle,
-      iosUiSettings: iosUiSettings,
     );
-    if (file?.existsSync() ?? false) {
-      old._crop(file!);
+    if (file != null) {
+      old._crop(File(file.path));
     } else {
       final dirti = await getTemporaryDirectory();
       final fileName = basenameWithoutExtension(old.path);
@@ -274,20 +275,22 @@ class CustomMultiImagepicker2 {
           if (oldImages.any((oi) => oi.id == i.id && oi.icCropped))
             i._icCropped = true; // ._crop(i.file);
           else {
-            final file = await ImageCropper.cropImage(
+            final file = await imageCropper.cropImage(
               sourcePath: i.path,
-              androidUiSettings: androidCroperUiSettings,
               aspectRatio: croperAspectRatio,
               aspectRatioPresets: croperAspectRatioPresets,
               compressFormat: compressCroperFormat,
               compressQuality: compressCroperQuality,
               cropStyle: cropStyle,
-              iosUiSettings: iosCroperUiSettings,
+              uiSettings: [
+                if (androidCroperUiSettings != null) androidCroperUiSettings,
+                if (iosCroperUiSettings != null) iosCroperUiSettings,
+              ],
               maxHeight: maxHeight,
               maxWidth: maxWidth,
             );
-            if (file?.existsSync() ?? false)
-              i._crop(file!);
+            if (file != null)
+              i._crop(File(file.path));
             else {
               final fileName = basenameWithoutExtension(i.path);
               final targetdir = '${dirti.path}/$fileName${i.id}.jpg';
