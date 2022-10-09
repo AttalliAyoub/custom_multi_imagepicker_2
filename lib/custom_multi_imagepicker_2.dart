@@ -19,7 +19,7 @@ import 'package:native_device_orientation/native_device_orientation.dart';
 
 export 'package:image_cropper_platform_interface/src/models/settings.dart'
     show CropAspectRatio, CropAspectRatioPreset, ImageCompressFormat, CropStyle;
-export 'package:image_cropper/src/settings.dart'
+export 'package:image_cropper/image_cropper.dart'
     show AndroidUiSettings, IOSUiSettings;
 
 part 'image_picker_widget.dart';
@@ -381,8 +381,11 @@ class CustomMultiImagepicker2 {
                                 BorderRadius.vertical(top: Radius.circular(25)),
                           ),
                           // minWidth: 70;
-                          child: FlatButton.icon(
-                            textColor: Theme.of(context).accentColor,
+                          child: TextButton.icon(
+                            style: TextButton.styleFrom(
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                            ),
                             icon: Icon(Icons.camera_alt),
                             label: Text('Camera'),
                             onPressed: camera,
@@ -399,8 +402,11 @@ class CustomMultiImagepicker2 {
                           ),
                           buttonColor:
                               Theme.of(context).scaffoldBackgroundColor,
-                          child: FlatButton.icon(
-                            textColor: Theme.of(context).accentColor,
+                          child: TextButton.icon(
+                            style: TextButton.styleFrom(
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                            ),
                             icon: Icon(Icons.collections),
                             label: Text('Gallery'),
                             onPressed: gallery,
